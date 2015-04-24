@@ -1,8 +1,5 @@
-class pacemaker::install (
-  $ensure = present,
-) {
-  include pacemaker::params
-  package { $pacemaker::params::package_list:
-    ensure => $ensure,
-  }
+class pacemaker::install ($ensure = present, $package_list = $pacemaker::params::package_list,) inherits pacemaker::params {
+
+
+  package { $package_list: ensure => $ensure, }
 }

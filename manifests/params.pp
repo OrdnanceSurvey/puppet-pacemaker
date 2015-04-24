@@ -1,4 +1,4 @@
-class pacemaker::params {
+class pacemaker::params{
 
   $hacluster_pwd         = 'CHANGEME'
   case $::osfamily {
