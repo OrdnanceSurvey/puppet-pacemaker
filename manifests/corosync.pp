@@ -27,7 +27,6 @@ class pacemaker::corosync (
   $settle_timeout   = '3600',
   $settle_tries     = '360',
   $settle_try_sleep = '10',
-  $cluster_conf,
   $transport        = "") inherits pacemaker {
   include ::pacemaker::params
 

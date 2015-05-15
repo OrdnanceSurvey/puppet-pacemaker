@@ -29,7 +29,11 @@
 # Copyright 2013 Red Hat Inc.
 #
 
-class pacemaker ($hacluster_pwd = $pacemaker::params::hacluster_pwd, $package_list = $pacemaker::params::package_list,) inherits 
+class pacemaker (
+  $hacluster_pwd = $pacemaker::params::hacluster_pwd, 
+  $package_list  = $pacemaker::params::package_list,
+  $cluster_conf  = $pacemaker::params::cluster_conf,
+) inherits 
 pacemaker::params {
   include ::pacemaker::params
 
