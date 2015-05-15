@@ -27,6 +27,7 @@ class pacemaker::corosync (
   $settle_timeout   = '3600',
   $settle_tries     = '360',
   $settle_try_sleep = '10',
+  $cluster_conf,
   $transport        = "") inherits pacemaker {
   include ::pacemaker::params
 
@@ -51,7 +52,7 @@ class pacemaker::corosync (
     exec { "enable-not-start-$cluster_name": command => "/usr/sbin/pcs cluster enable" } ->
     exec { "Set password for hacluster user on $cluster_name":
       command => "/bin/echo ${::pacemaker::hacluster_pwd} | /usr/bin/passwd --stdin hacluster",
-      creates => "/etc/cluster/cluster.conf",
+      creates => "$cluster_conf",
       require => Class["::pacemaker::install"],
     } ->
     exec { "auth-successful-across-all-nodes":
