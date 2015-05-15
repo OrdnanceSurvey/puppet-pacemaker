@@ -27,7 +27,9 @@ class pacemaker::corosync (
   $settle_timeout   = '3600',
   $settle_tries     = '360',
   $settle_try_sleep = '10',
-  $transport        = "") inherits pacemaker {
+  $hacluster_pwd    = 'CHANGEME',
+  $transport        = ""
+) inherits pacemaker {
   include ::pacemaker::params
 
   if $manage_fw {
@@ -50,12 +52,12 @@ class pacemaker::corosync (
     # we have more fragile when-to-start pacemaker conditions with pcsd
     exec { "enable-not-start-$cluster_name": command => "/usr/sbin/pcs cluster enable" } ->
     exec { "Set password for hacluster user on $cluster_name":
-      command => "/bin/echo ${::pacemaker::hacluster_pwd} | /usr/bin/passwd --stdin hacluster",
+      command => "/bin/echo $hacluster_pwd | /usr/bin/passwd --stdin hacluster",
       creates => "$cluster_conf",
       require => Class["::pacemaker::install"],
     } ->
     exec { "auth-successful-across-all-nodes":
-      command   => "/usr/sbin/pcs cluster auth $cluster_members -u hacluster -p ${::pacemaker::hacluster_pwd} --force",
+      command   => "/usr/sbin/pcs cluster auth $cluster_members -u hacluster -p $hacluster_pwd --force",
       timeout   => $settle_timeout,
       tries     => $settle_tries,
       try_sleep => $settle_try_sleep,
