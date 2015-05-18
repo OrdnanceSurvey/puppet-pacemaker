@@ -21,6 +21,7 @@
 
 class pacemaker::corosync (
   $cluster_members,
+  $cluster_altnames,
   $cluster_name     = 'clustername',
   $setup_cluster    = true,
   $manage_fw        = true,
@@ -28,7 +29,8 @@ class pacemaker::corosync (
   $settle_tries     = '360',
   $settle_try_sleep = '10',
   $hacluster_pwd    = 'CHANGEME',
-  $transport        = ""
+  $transport        = "",
+  $alt_members      = ""
 ) inherits pacemaker {
   include ::pacemaker::params
 
@@ -64,12 +66,31 @@ class pacemaker::corosync (
     } ->
     Exec["wait-for-settle"]
   }
-  $transport_chunk = $transport ? {
+  $transporlt_chunk = $transport ? {
     ''      => '',
     default => "--transport ${transport}",
   }
 
-  if $setup_cluster {
+  if $setup_cluster and $alt_members {
+
+    $members_array = split ($cluster_members,' ')
+      $server1 = $members_array[0]
+      $server2 = $members_array[1]
+
+    $alt_array = split ($alt_members,' ')
+      $server1_alt = $alt_array[0]
+      $server2_alt = $alt_array[1]
+
+    $cluster_alt_members = "${server1},${server1_alt} ${server2},${server2_alt}"
+
+    exec { "Create Cluster $cluster_name":
+      creates => "/etc/cluster/cluster.conf",
+      command => "/usr/sbin/pcs cluster setup --name $cluster_name $cluster_alt_members $transport_chunk",
+      unless  => "/usr/bin/test -f /etc/corosync/corosync.conf",
+      require => Class["::pacemaker::install"],
+      }
+    }
+    elsif $setup_cluster {
     exec { "Create Cluster $cluster_name":
       creates => "/etc/cluster/cluster.conf",
       command => "/usr/sbin/pcs cluster setup --name $cluster_name $cluster_members $transport_chunk",
@@ -78,7 +99,7 @@ class pacemaker::corosync (
     } ->
     exec { "Start Cluster $cluster_name":
       unless  => "/usr/sbin/pcs status >/dev/null 2>&1",
-      command => "/usr/sbin/pcs cluster start --all",
+      command => "/usr/sbin/pcs cluster l --all",
       require => Exec["Create Cluster $cluster_name"],
     }
 
