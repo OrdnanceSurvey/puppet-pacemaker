@@ -21,7 +21,6 @@
 
 class pacemaker::corosync (
   $cluster_members,
-  $cluster_altnames,
   $cluster_name     = 'clustername',
   $setup_cluster    = true,
   $manage_fw        = true,
