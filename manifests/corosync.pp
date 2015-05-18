@@ -71,6 +71,8 @@ class pacemaker::corosync (
   }
 
   if $setup_cluster and $alt_members {
+    
+    notify {"$alt_members":}
 
     $members_array = split ($cluster_members,' ')
       $server1 = $members_array[0]
