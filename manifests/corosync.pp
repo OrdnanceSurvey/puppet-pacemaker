@@ -29,7 +29,7 @@ class pacemaker::corosync (
   $settle_try_sleep = '10',
   $hacluster_pwd    = 'CHANGEME',
   $transport        = "",
-  $alt_members      = ""
+  $alt_members      = undef
 ) inherits pacemaker {
   include ::pacemaker::params
 
