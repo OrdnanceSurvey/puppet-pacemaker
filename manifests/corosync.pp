@@ -100,7 +100,7 @@ class pacemaker::corosync (
       } ->
       exec { "Start Cluster $cluster_name":
         unless  => "/usr/sbin/pcs status >/dev/null 2>&1",
-        command => "/usr/sbin/pcs cluster start",
+        command => "/usr/sbin/pcs cluster start --all",
         require => Exec["Create Cluster $cluster_name"],
       }
 
