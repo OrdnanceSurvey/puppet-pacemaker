@@ -81,7 +81,24 @@ class pacemaker::corosync (
         $server1_alt = $alt_array[0]
         $server2_alt = $alt_array[1]
 
-      $cluster_alt_members = "${server1},${server1_alt} ${server2},${server2_alt}"
+
+       if $server1_alt {
+	$comma1=","
+       }
+       else{
+        $comma1=""
+       }
+
+
+       if $server2_alt {
+         $comma2=","	
+       }
+       else {
+         $comma=""
+       }
+
+
+      $cluster_alt_members = "${server1}${comma1}${server1_alt} ${server2}${comma2}${server2_alt}"
 
       exec { "Create Cluster $cluster_name":
         creates => "/etc/cluster/cluster.conf",
