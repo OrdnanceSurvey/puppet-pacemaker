@@ -93,7 +93,7 @@ Puppet::Type.type(:pcmk_resource).provide(:default) do
 
         # find the interval value
         for line in get_interval.lines.each do
-            return (line.scan /interval=(.+?) /m)[0][0] if line.include? 'interval='
+            return (line.scan /interval=(.+?) /m)[0][0] if line.include? 'monitor interval='
         end
         # return empty string if an interval value wasn't found
         ''
