@@ -96,8 +96,9 @@ class pacemaker::corosync (
         command => "/usr/sbin/pcs cluster setup --name $cluster_name $cluster_members $transport_chunk",
         unless  => "/usr/bin/test -f /etc/corosync/corosync.conf",
         require => Class["::pacemaker::install"],
+        before  => Exec["Start Cluster $cluster_name"],
         }
-      } ->
+      } 
       exec { "Start Cluster $cluster_name":
         unless  => "/usr/sbin/pcs status >/dev/null 2>&1",
         command => "/usr/sbin/pcs cluster start --all",
